@@ -52,18 +52,21 @@ st.subheader("Your Input Data:")
 st.write(input_features)
 
 # Predict based on user input and display the result
+# Predict based on user input and display the result
 if st.button("Predict"):
-    prediction = model.predict(input_features)  # 0 or 1
-    prediction_proba = model.predict_proba(input_features)  # Probabilities for each class
+    prediction_proba = model.predict_proba(input_features)
+    heart_disease_prob = prediction_proba[0][1]  # Probability of class 1 (Heart Disease)
 
-    # Display prediction
-    st.subheader("Prediction Result:")
-    if prediction[0] == 1:
-        st.write("The model predicts **Heart Disease**.")
+    # Display risk level
+    st.subheader("Risk Assessment:")
+    if heart_disease_prob < 0.33:
+        st.success("🟢 You are at **Low Risk**. No need to see a doctor, but maintain a healthy lifestyle.")
+    elif 0.33 <= heart_disease_prob < 0.66:
+        st.warning("🟠 You are at **Moderate Risk**. Consider improving your lifestyle and monitoring regularly.")
     else:
-        st.write("The model predicts **No Heart Disease**.")
+        st.error("🔴 You are at **High Risk**. Please consult a doctor as soon as possible.")
 
     # Display prediction probabilities
     st.subheader("Prediction Probability:")
-    st.write(f"Probability of No Heart Disease: {prediction_proba[0][0]:.2f}")
-    st.write(f"Probability of Heart Disease: {prediction_proba[0][1]:.2f}")
+    st.write(f"Probability of No Heart Disease: {1 - heart_disease_prob:.2f}")
+    st.write(f"Probability of Heart Disease: {heart_disease_prob:.2f}")
